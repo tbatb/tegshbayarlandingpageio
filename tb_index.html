@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tegshbayar Batbayar — CV</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+  :root {
+    --bg: #f0ece4;
+    --bg-secondary: #e6e1d8;
+    --text: #1a1a1a;
+    --text-muted: #6b6560;
+    --accent: #3a3a3a;
+    --border: #c8c2b8;
+    --card-bg: #e8e3da;
+    --scanline: rgba(0,0,0,0.03);
+    --noise-opacity: 0.4;
+    --font-mono: 'JetBrains Mono', 'Space Mono', 'Courier New', monospace;
+    --transition: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  [data-theme="dark"] {
+    --bg: #0f0f0f;
+    --bg-secondary: #1a1a1a;
+    --text: #e0dcd4;
+    --text-muted: #7a756e;
+    --accent: #a0a0a0;
+    --border: #2a2a2a;
+    --card-bg: #161616;
+    --scanline: rgba(255,255,255,0.02);
+    --noise-opacity: 0.3;
+  }
+
+  [data-theme="terminal"] {
+    --bg: #0a0a0a;
+    --bg-secondary: #0f0f0f;
+    --text: #00ff41;
+    --text-muted: #008f23;
+    --accent: #00ff41;
+    --border: #003d10;
+    --card-bg: #0d0d0d;
+    --scanline: rgba(0,255,65,0.03);
+    --noise-opacity: 0.5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    font-size: 13px;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-mono);
+    background: var(--bg);
+    color: var(--text);
+    transition: background var(--transition), color var(--transition);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
+    opacity: var(--noise-opacity);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* Scanlines for terminal mode */
+  body[data-theme="terminal"]::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 255, 65, 0.015) 2px,
+      rgba(0, 255, 65, 0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* CRT flicker for terminal */
+  body[data-theme="terminal"] {
+    animation: flicker 0.15s infinite alternate;
+  }
+
+  @keyframes flicker {
+    0% { opacity: 0.97; }
+    100% { opacity: 1; }
+  }
+
+  /* Layout */
+  .wrapper {
+    display: grid;
+    grid-template-columns: 260px 1fr 1fr;
+    min-height: 100vh;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* Left Sidebar */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    transition: border-color var(--transition);
+  }
+
+  .name {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+  }
+
+  [data-theme="terminal"] .name {
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+  }
+
+  .bio {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  .sidebar-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .sidebar-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .sidebar-link {
+    display: block;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.15rem 0;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .sidebar-link:hover {
+    border-bottom-color: var(--text);
+  }
+
+  [data-theme="terminal"] .sidebar-link:hover {
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
+  }
+
+  .sidebar-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .spacer { flex: 1; }
+
+  /* Mode Switcher */
+  .mode-switcher {
+    display: flex;
+    gap: 0.25rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .mode-btn {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+  }
+
+  .mode-btn:hover {
+    color: var(--text);
+    border-color: var(--text);
+  }
+
+  .mode-btn.active {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  [data-theme="terminal"] .mode-btn.active {
+    box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
+  }
+
+  /* Center Feed */
+  .feed {
+    border-right: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    overflow-y: auto;
+    transition: border-color var(--transition);
+  }
+
+  .entry {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border);
+    transition: border-color var(--transition);
+  }
+
+  .entry:last-child {
+    border-bottom: none;
+  }
+
+  .entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .entry-company {
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .entry-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .entry-role {
+    font-size: 0.8rem;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+    font-style: italic;
+  }
+
+  .entry-desc {
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  .entry-desc p {
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  [data-theme="terminal"] .section-title {
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
+  }
+
+  /* Terminal cursor blink for terminal mode */
+  [data-theme="terminal"] .entry-company::after {
+    content: '█';
+    animation: blink 1s step-end infinite;
+    margin-left: 4px;
+    font-size: 0.8em;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  /* Right Panel */
+  .panel {
+    padding: 2rem 1.5rem;
+    overflow-y: auto;
+  }
+
+  .skill-block {
+    margin-bottom: 2rem;
+    padding: 1.25rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    transition: all var(--transition);
+  }
+
+  .skill-block:hover {
+    border-color: var(--accent);
+  }
+
+  [data-theme="terminal"] .skill-block:hover {
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
+  }
+
+  .skill-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .skill-items {
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  .edu-block {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .edu-block:last-of-type {
+    border-bottom: none;
+  }
+
+  .edu-school {
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .edu-degree {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-top: 0.2rem;
+  }
+
+  .edu-date {
+    font-size: 0.7rem;
+    color: var(--accent);
+    margin-top: 0.3rem;
+    font-weight: 500;
+  }
+
+  .personal-note {
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    font-weight: 300;
+    font-style: italic;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    margin-top: 2rem;
+  }
+
+  /* Pixel art profile placeholder */
+  .profile-art {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: all var(--transition);
+    position: relative;
+  }
+
+  .profile-art svg {
+    width: 60%;
+    height: 60%;
+  }
+
+  .profile-art svg path,
+  .profile-art svg rect,
+  .profile-art svg circle {
+    fill: var(--text);
+    transition: fill var(--transition);
+  }
+
+  /* Terminal prefix */
+  [data-theme="terminal"] .entry-desc p::before {
+    content: '> ';
+    color: var(--accent);
+  }
+
+  /* Status bar for terminal mode */
+  .terminal-status {
+    display: none;
+    font-size: 0.7rem;
+    color: var(--accent);
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    opacity: 0.7;
+  }
+
+  [data-theme="terminal"] .terminal-status {
+    display: block;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .wrapper {
+      grid-template-columns: 220px 1fr;
+    }
+    .panel {
+      display: none;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .wrapper {
+      grid-template-columns: 1fr;
+    }
+    .sidebar {
+      position: relative;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel {
+      display: block;
+    }
+  }
+
+  /* Timestamp styling */
+  .timestamp {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+    opacity: 0.6;
+  }
+
+  /* Play bar decoration */
+  .play-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .play-label {
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+    position: relative;
+  }
+
+  .progress-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 35%;
+    background: var(--accent);
+    transition: background var(--transition);
+  }
+
+  .play-time {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Smooth theme transitions */
+  .sidebar, .feed, .panel, .entry, .skill-block, .edu-block, .profile-art, .personal-note, .play-bar, .mode-btn {
+    transition: all var(--transition);
+  }
+
+  /* Selection */
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar">
+    <div class="name">TEGSHBAYAR</div>
+
+    <div class="bio">
+      platform/product owner, servicenow<br>
+      @ WienIT.<br>
+      TU Vienna, business informatics.
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Education</div>
+      <a class="sidebar-link" href="#">TU Vienna — BSc.</a>
+      <a class="sidebar-link" href="#">Quantum Info (MSc.) — on break</a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Stack</div>
+      <div class="sidebar-text">
+        Java, Python, R<br>
+        Spring Boot, Angular, React<br>
+        PostgreSQL, Node.js<br>
+        Dell Boomi, Workato<br>
+        NetSuite, ServiceNow
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Contact</div>
+      <a class="sidebar-link" href="/cdn-cgi/l/email-protection#05716062766d67647c64772b67647167647c6477456a7071696a6a6e2b666a68">email</a>
+      <a class="sidebar-link" href="tel:+436644181554">+43 664 4181554</a>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="terminal-status">
+      user@tegsh:~$ cat cv.txt<br>
+      [STATUS: CONNECTED]
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Mode</div>
+      <div class="mode-switcher">
+        <button class="mode-btn active" data-mode="light">Light</button>
+        <button class="mode-btn" data-mode="dark">Dark</button>
+        <button class="mode-btn" data-mode="terminal">Terminal</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CENTER FEED -->
+  <main class="feed">
+    <div class="section-title">Experience</div>
+
+    <article class="entry">
+      <div class="timestamp">09 2025 — present</div>
+      <div class="entry-header">
+        <span class="entry-company">WienIT</span>
+      </div>
+      <div class="entry-role">Platform Owner / Product Owner, ServiceNow — since 03 2026</div>
+      <div class="entry-desc">
+        <p>Took ownership of the ServiceNow platform, overseeing strategy and roadmap.</p>
+      </div>
+      <div class="entry-role" style="margin-top: 0.75rem;">Solution Architect — 09 2025 to 03 2026</div>
+      <div class="entry-desc">
+        <p>Designed solution architectures for enterprise IT service management and integration initiatives.</p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="timestamp">03 2023 — 08 2025</div>
+      <div class="entry-header">
+        <span class="entry-company">Deloitte</span>
+        <span class="entry-date">Touche Tohmatsu Limited</span>
+      </div>
+      <div class="entry-role">Technical Consultant</div>
+      <div class="entry-desc">
+        <p>Conducted platform analysis, API development, process modeling, and requirement engineering for enterprise integration projects.</p>
+        <p>Designed end-to-end technical architectures for multi-system integrations and defined data flow patterns.</p>
+        <p>Developed bespoke integration connectors using Dell Boomi and Workato, implementing custom scripting solutions where standard connectors fell short.</p>
+        <p>Provided technical consultation on integration strategy, solution architecture, and best practices for enterprise system connectivity.</p>
+        <p>Created technical documentation including system specs, API docs, deployment guides, and maintenance procedures.</p>
+        <p>Designed and implemented cloud-based solutions to optimize performance and scalability.</p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="timestamp">09 2019 — 09 2022</div>
+      <div class="entry-header">
+        <span class="entry-company">BCG</span>
+        <span class="entry-date">Boston Consulting Group</span>
+      </div>
+      <div class="entry-role">IT Administrative Assistant</div>
+      <div class="entry-desc">
+        <p>Managed databases, including setting up data storage and retrieval protocols, adjusting permissions, and ensuring data security during migrations.</p>
+        <p>Provided IT support — hardware/software setup, troubleshooting connectivity and data access issues.</p>
+        <p>Maintained information security across the organization.</p>
+        <p>Worked with Active Directory, UMRA, Power BI and ServiceNOW.</p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="timestamp">08 2018 — 08 2019</div>
+      <div class="entry-header">
+        <span class="entry-company">Rent a Ghost</span>
+        <span class="entry-date">RaG</span>
+      </div>
+      <div class="entry-role">Author</div>
+      <div class="entry-desc">
+        <p>Academic research and writing.</p>
+        <p>Creating non-fiction literature — biographies, autobiographies, web content and reference books.</p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="timestamp">11 2016 — 10 2018</div>
+      <div class="entry-header">
+        <span class="entry-company">Samsung / Dyson</span>
+        <span class="entry-date">via Easystaff</span>
+      </div>
+      <div class="entry-role">Brand Promoter</div>
+      <div class="entry-desc">
+        <p>Demonstrated features and benefits of Samsung and Dyson products to potential customers.</p>
+        <p>Provided detailed answers to customer inquiries regarding product specifications and usage.</p>
+        <p>Generated reports tracking customer interest, common inquiries, and volume of products distributed at events.</p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="timestamp">06 2016 — 09 2016</div>
+      <div class="entry-header">
+        <span class="entry-company">Black Friday Sale</span>
+      </div>
+      <div class="entry-role">Junior Sales Manager — Summer</div>
+      <div class="entry-desc">
+        <p>Researched and gathered key information on assigned clients. Engaged with clients and developed tailored sales plans.</p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="timestamp">09 2015 — 06 2016</div>
+      <div class="entry-header">
+        <span class="entry-company">GVO Personal</span>
+      </div>
+      <div class="entry-role">Waiter, Dishwasher</div>
+      <div class="entry-desc">
+        <p>Provided excellent customer service. Maintained kitchen cleanliness and ensured a sanitary work environment.</p>
+      </div>
+    </article>
+  </main>
+
+  <!-- RIGHT PANEL -->
+  <aside class="panel">
+    <!-- Monogram / visual -->
+    <div class="profile-art">
+      <img src="data:image/png;base64,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" alt="Tegshbayar Batbayar" style="width:100%;height:100%;object-fit:cover;image-rendering:pixelated;">
+    </div>
+
+    <div class="section-title">Education</div>
+
+    <div class="edu-block">
+      <div class="edu-school">Technical University of Vienna</div>
+      <div class="edu-degree">Business Informatics (BSc.)</div>
+      <div class="edu-date">2021 — 2025</div>
+    </div>
+
+    <div class="edu-block">
+      <div class="edu-school">Technical University of Vienna</div>
+      <div class="edu-degree">Quantum Information Science & Technology (MSc.)</div>
+      <div class="edu-date">2025 — on break due to work project</div>
+    </div>
+
+    <div class="section-title" style="margin-top: 2rem;">Technical Skills</div>
+
+    <div class="skill-block">
+      <div class="skill-label">Languages</div>
+      <div class="skill-items">Java, Python, R</div>
+    </div>
+
+    <div class="skill-block">
+      <div class="skill-label">Web</div>
+      <div class="skill-items">HTML5, CSS, JavaScript</div>
+    </div>
+
+    <div class="skill-block">
+      <div class="skill-label">Frameworks</div>
+      <div class="skill-items">Spring Boot, Angular, ReactJS, PostgreSQL, NodeJS, UML, BPMN</div>
+    </div>
+
+    <div class="skill-block">
+      <div class="skill-label">Integration</div>
+      <div class="skill-items">NetSuite, Dell Boomi, Workato, ServiceNow, Informatica</div>
+    </div>
+
+  </aside>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.mode-btn');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.mode;
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (mode === 'light') {
+        document.documentElement.removeAttribute('data-theme');
+        document.body.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', mode);
+        document.body.setAttribute('data-theme', mode);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
